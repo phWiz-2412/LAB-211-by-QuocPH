@@ -1,2 +1,0 @@
-LinearSearchProgram
-javaapplication1.JavaApplication1
