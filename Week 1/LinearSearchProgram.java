@@ -3,43 +3,71 @@ import java.util.Scanner;
 
 public class LinearSearchProgram {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Random random = new Random();
+        LinearSearchProgram program = new LinearSearchProgram();
+        program.run();
+    }
 
-        System.out.print("Enter number of array: ");
-        int arraySize = scanner.nextInt();
+    public void run() {
+        InputHandler inputHandler = new InputHandler();
+        ArrayHandler arrayHandler = new ArrayHandler();
 
-        if (arraySize <= 0) {
-            System.out.println("Number of array must be a positive number!");
-            return;
-        }
+        int arraySize = inputHandler.getPositiveNumber("Enter number of array: ");
 
-        int[] array = new int[arraySize];
-        for (int i = 0; i < arraySize; i++) {
-            array[i] = random.nextInt(10);
-        }
+        int[] array = arrayHandler.generateRandomArray(arraySize);
+        arrayHandler.displayArray(array);
 
-        System.out.print("The array: ");
-        for (int num : array) {
-            System.out.print(num + " ");
-        }
-        System.out.println();
+        int searchValue = inputHandler.getPositiveNumber("Enter search value: ");
 
-        System.out.print("Enter search value: ");
-        int searchValue = scanner.nextInt();
-
-        int foundIndex = -1;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == searchValue) {
-                foundIndex = i;
-                break;
-            }
-        }
-
+        int foundIndex = arrayHandler.linearSearch(array, searchValue);
         if (foundIndex != -1) {
             System.out.println("Found " + searchValue + " at index: " + foundIndex);
         } else {
             System.out.println(searchValue + " not found in the array.");
         }
+    }
+}
+
+class InputHandler {
+    private final Scanner scanner = new Scanner(System.in);
+
+    public int getPositiveNumber(String message) {
+        int number;
+        do {
+            System.out.print(message);
+            number = scanner.nextInt();
+            if (number <= 0) {
+                System.out.println("Please enter a positive number!");
+            }
+        } while (number <= 0);
+        return number;
+    }
+}
+
+class ArrayHandler {
+    private final Random random = new Random();
+
+    public int[] generateRandomArray(int size) {
+        int[] array = new int[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = random.nextInt(10);
+        }
+        return array;
+    }
+
+    public void displayArray(int[] array) {
+        System.out.print("The array: ");
+        for (int num : array) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
+    }
+
+    public int linearSearch(int[] array, int value) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == value) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
