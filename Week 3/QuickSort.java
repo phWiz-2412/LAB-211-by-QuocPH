@@ -6,31 +6,25 @@ public class QuickSort {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
         
-        // Nhập số phần tử của mảng
         System.out.print("Enter number of array: ");
         int n = scanner.nextInt();
         
-        // Tạo và khởi tạo mảng với các số ngẫu nhiên
         int[] array = new int[n];
         for (int i = 0; i < n; i++) {
-            array[i] = random.nextInt(10); // Giới hạn giá trị từ 0-9
+            array[i] = random.nextInt(10); 
         }
         
-        // Hiển thị mảng chưa sắp xếp
         System.out.print("Unsorted array: ");
         printArray(array);
         
-        // Sắp xếp mảng bằng Quick Sort
         quickSort(array, 0, n - 1);
         
-        // Hiển thị mảng đã sắp xếp
         System.out.print("Sorted array: ");
         printArray(array);
         
         scanner.close();
     }
     
-    // Hàm Quick Sort
     public static void quickSort(int[] arr, int left, int right) {
         if (left < right) {
             int pivotIndex = partition(arr, left, right);
@@ -40,7 +34,7 @@ public class QuickSort {
     }
 
     public static int partition(int[] arr, int left, int right) {
-        int pivot = arr[right]; // Chọn phần tử cuối cùng làm pivot
+        int pivot = arr[right];
         int i = left - 1;
         
         for (int j = left; j < right; j++) {
