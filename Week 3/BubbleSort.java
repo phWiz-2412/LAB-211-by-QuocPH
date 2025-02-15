@@ -6,24 +6,19 @@ public class BubbleSort {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
         
-        // Nhập số phần tử của mảng
         System.out.print("Enter number of array: ");
         int n = scanner.nextInt();
         
-        // Tạo và khởi tạo mảng với các số ngẫu nhiên
         int[] array = new int[n];
         for (int i = 0; i < n; i++) {
-            array[i] = random.nextInt(10); // Giới hạn giá trị từ 0-9
+            array[i] = random.nextInt(10);
         }
         
-        // Hiển thị mảng chưa sắp xếp
         System.out.print("Unsorted array: ");
         printArray(array);
         
-        // Sắp xếp mảng bằng Bubble Sort
         bubbleSort(array);
         
-        // Hiển thị mảng đã sắp xếp
         System.out.print("Sorted array: ");
         printArray(array);
         
@@ -37,7 +32,7 @@ public class BubbleSort {
             swapped = false;
             for (int j = 0; j < n - i - 1; j++) {
                 if (arr[j] > arr[j + 1]) {
-                    // Hoán đổi phần tử nếu sai thứ tự
+
                     int temp = arr[j];
                     arr[j] = arr[j + 1];
                     arr[j + 1] = temp;
