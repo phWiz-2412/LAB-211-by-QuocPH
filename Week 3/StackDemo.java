@@ -19,7 +19,7 @@ class MyStack {
             return value;
         } else {
             System.out.println("Stack is empty!");
-            return -1; // Hoặc có thể throw exception tùy yêu cầu
+            return -1;
         }
     }
 
@@ -46,6 +46,6 @@ public class StackDemo {
         stack.pop();
         stack.pop();
         stack.pop();
-        stack.pop(); // Kiểm tra pop khi stack rỗng
+        stack.pop();
     }
 }
