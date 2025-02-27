@@ -1,171 +1,142 @@
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-class Course {
-    protected String courseID, courseName;
-    protected int credits;
-    
-    public Course() {
-        this.courseID = "";
-        this.courseName = "";
-        this.credits = 0;
+class Worker {
+    private String id, name, workLocation;
+    private int age;
+    private double salary;
+
+    public Worker(String id, String name, int age, double salary, String workLocation) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.salary = salary;
+        this.workLocation = workLocation;
     }
-    
-    public void input(Scanner sc, List<Course> courses) {
-        while (true) {
-            System.out.print("Course ID: ");
-            courseID = sc.nextLine().trim();
-            if (courseID.isEmpty() || courses.stream().anyMatch(c -> c.courseID.equals(courseID))) {
-                System.out.println("Data input is invalid, ID must be unique");
-            } else {
-                break;
-            }
-        }
-        
-        do {
-            System.out.print("Course name: ");
-            courseName = sc.nextLine().trim();
-        } while (courseName.isEmpty());
-        
-        while (true) {
-            try {
-                System.out.print("Credits: ");
-                credits = Integer.parseInt(sc.nextLine().trim());
-                if (credits > 0) break;
-                System.out.println("Data input is invalid");
-            } catch (NumberFormatException e) {
-                System.out.println("Data input is invalid");
-            }
-        }
+
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public double getSalary() { return salary; }
+    public String getWorkLocation() { return workLocation; }
+    public void setSalary(double salary) { this.salary = salary; }
+}
+
+class SalaryHistory {
+    private String workerId, name, status, date;
+    private double salary;
+
+    public SalaryHistory(String workerId, String name, double salary, String status, String date) {
+        this.workerId = workerId;
+        this.name = name;
+        this.salary = salary;
+        this.status = status;
+        this.date = date;
     }
-    
+
     public void display() {
-        System.out.println(courseID + "-" + courseName + "-" + credits);
+        System.out.printf("%-10s%-10s%-10.2f%-10s%-15s%n", workerId, name, salary, status, date);
     }
 }
 
-class OnlineCourse extends Course {
-    private String platform, instructors, note;
-    
-    public OnlineCourse() {
-        super();
-        this.platform = "";
-        this.instructors = "";
-        this.note = "";
+class WorkerManagement {
+    private List<Worker> workers = new ArrayList<>();
+    private List<SalaryHistory> salaryHistories = new ArrayList<>();
+    private Scanner sc = new Scanner(System.in);
+
+    public void addWorker() {
+        System.out.print("Enter ID: ");
+        String id = sc.nextLine();
+        if (getWorkerById(id) != null) {
+            System.out.println("Worker ID already exists.");
+            return;
+        }
+        System.out.print("Enter Name: ");
+        String name = sc.nextLine();
+        System.out.print("Enter Age: ");
+        int age = sc.nextInt();
+        System.out.print("Enter Salary: ");
+        double salary = sc.nextDouble();
+        sc.nextLine(); // Consume newline
+        System.out.print("Enter Work Location: ");
+        String workLocation = sc.nextLine();
+
+        if (age < 18 || age > 50 || salary <= 0) {
+            System.out.println("Invalid input. Age must be 18-50, salary > 0.");
+            return;
+        }
+
+        workers.add(new Worker(id, name, age, salary, workLocation));
+        System.out.println("Worker added successfully.");
     }
-    
-    @Override
-    public void input(Scanner sc, List<Course> courses) {
-        super.input(sc, courses);
-        do {
-            System.out.print("Platform: ");
-            platform = sc.nextLine().trim();
-        } while (platform.isEmpty());
-        
-        do {
-            System.out.print("Instructors: ");
-            instructors = sc.nextLine().trim();
-        } while (instructors.isEmpty());
-        
-        do {
-            System.out.print("Note: ");
-            note = sc.nextLine().trim();
-        } while (note.isEmpty());
+
+    public void changeSalary(String type) {
+        System.out.print("Enter Worker ID: ");
+        String id = sc.nextLine();
+        Worker worker = getWorkerById(id);
+        if (worker == null) {
+            System.out.println("Worker not found.");
+            return;
+        }
+
+        System.out.print("Enter amount: ");
+        double amount = sc.nextDouble();
+        sc.nextLine(); // Consume newline
+
+        if (amount <= 0) {
+            System.out.println("Amount must be > 0.");
+            return;
+        }
+
+        double newSalary = type.equals("UP") ? worker.getSalary() + amount : worker.getSalary() - amount;
+        if (newSalary < 0) {
+            System.out.println("Salary cannot be negative.");
+            return;
+        }
+
+        worker.setSalary(newSalary);
+        salaryHistories.add(new SalaryHistory(id, worker.getName(), newSalary, type, new Date().toString()));
+        System.out.println("Salary updated successfully.");
     }
-    
-    @Override
-    public void display() {
-        System.out.println(courseID + "-" + courseName + "-" + credits + "-" + platform + "-" + instructors + "-" + note);
+
+    public void displaySalaryHistory() {
+        System.out.printf("%-10s%-10s%-10s%-10s%-15s%n", "ID", "Name", "Salary", "Status", "Date");
+        for (SalaryHistory sh : salaryHistories) {
+            sh.display();
+        }
+    }
+
+    private Worker getWorkerById(String id) {
+        for (Worker w : workers) {
+            if (w.getId().equals(id)) return w;
+        }
+        return null;
     }
 }
 
-class OfflineCourse extends Course {
-    private String campus;
-    private Date begin, end;
-    
-    public OfflineCourse() {
-        super();
-        this.campus = "";
-    }
-    
-    @Override
-    public void input(Scanner sc, List<Course> courses) {
-        super.input(sc, courses);
-        do {
-            System.out.print("Campus: ");
-            campus = sc.nextLine().trim();
-        } while (campus.isEmpty());
-        
-        while (true) {
-            try {
-                System.out.print("Begin (dd/MM/yyyy): ");
-                begin = new SimpleDateFormat("dd/MM/yyyy").parse(sc.nextLine().trim());
-                System.out.print("End (dd/MM/yyyy): ");
-                end = new SimpleDateFormat("dd/MM/yyyy").parse(sc.nextLine().trim());
-                if (begin.before(end)) break;
-                System.out.println("Data input is invalid, end must be after begin");
-            } catch (Exception e) {
-                System.out.println("Invalid date format");
-            }
-        }
-    }
-    
-    @Override
-    public void display() {
-        System.out.println(courseID + "-" + courseName + "-" + credits + "-" + campus + "-" + begin + "-" + end);
-    }
-}
-
-public class CourseManagement {
-    private static List<Course> courses = new ArrayList<>();
-    private static Scanner sc = new Scanner(System.in);
-    
-    private static void addCourse() {
-        System.out.print("Online (O) or Offline (F): ");
-        String type = sc.nextLine().trim().toUpperCase();
-        Course course = type.equals("O") ? new OnlineCourse() : new OfflineCourse();
-        course.input(sc, courses);
-        courses.add(course);
-        System.out.println("Course added successfully!");
-    }
-    
-    private static void printCourses() {
-        System.out.print("Do you want to print all (A), online course (O) or offline course (F): ");
-        String type = sc.nextLine().trim().toUpperCase();
-        for (Course c : courses) {
-            if (type.equals("A") || (type.equals("O") && c instanceof OnlineCourse) || (type.equals("F") && c instanceof OfflineCourse)) {
-                c.display();
-            }
-        }
-    }
-    
-    private static void searchCourse() {
-        System.out.print("Course ID: ");
-        String id = sc.nextLine().trim();
-        for (Course c : courses) {
-            if (c.courseID.equals(id)) {
-                c.display();
-                return;
-            }
-        }
-        System.out.println("No data found.");
-    }
-    
+public class MainWorker {
     public static void main(String[] args) {
+        WorkerManagement wm = new WorkerManagement();
+        Scanner sc = new Scanner(System.in);
+
         while (true) {
-            System.out.println("*** Course Management ***");
-            System.out.println("1. Add online course/ offline course");
-            System.out.println("2. Print all course");
-            System.out.println("3. Search information base on course ID");
-            System.out.println("4. Exit");
-            System.out.print("You choose: ");
-            String choice = sc.nextLine().trim();
+            System.out.println("===== Worker Management =====");
+            System.out.println("1. Add worker");
+            System.out.println("2. Increase salary");
+            System.out.println("3. Decrease salary");
+            System.out.println("4. Display Information salary");
+            System.out.println("5. Exit");
+            System.out.print("Choose an option: ");
+            
+            int choice = sc.nextInt();
+            sc.nextLine(); // Consume newline
+            
             switch (choice) {
-                case "1": addCourse(); break;
-                case "2": printCourses(); break;
-                case "3": searchCourse(); break;
-                case "4": System.out.println("BYE AND SEE YOU NEXT TIME"); return;
-                default: System.out.println("Invalid choice");
+                case 1: wm.addWorker(); break;
+                case 2: wm.changeSalary("UP"); break;
+                case 3: wm.changeSalary("DOWN"); break;
+                case 4: wm.displaySalaryHistory(); break;
+                case 5: System.out.println("Exiting..."); return;
+                default: System.out.println("Invalid choice, try again.");
             }
         }
     }
