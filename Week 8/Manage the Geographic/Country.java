@@ -1,4 +1,4 @@
-class Country {
+public class Country {
     protected String countryCode;
     protected String countryName;
     protected float totalArea;
@@ -11,7 +11,19 @@ class Country {
         this.totalArea = totalArea;
     }
 
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public float getTotalArea() {
+        return totalArea;
+    }
+
     public void display() {
-        System.out.printf("%-5s | %-15s | %-10.2f\n", countryCode, countryName, totalArea);
+        System.out.printf("%-5s | %-20s | %-10.2f", countryCode, countryName, totalArea);
     }
 }
